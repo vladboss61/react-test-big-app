@@ -2,16 +2,23 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import AppComponent from './AppComponent';
 import reportWebVitals from './reportWebVitals';
+import React from 'react';
+
+//Include bootstrap styles globally after execution - npm install react-bootstrap bootstrap.
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 console.log('Our application is started in index.tsx file.')
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+export const GlobalContext = React.createContext<string | null>(null);
+
 root.render(
-  //<React.StrictMode>
+  <GlobalContext.Provider value='Global Context Value'>
     <AppComponent />
-  // </React.StrictMode>
+  </GlobalContext.Provider>
 );
 
 console.log("Rendered index.tsx");

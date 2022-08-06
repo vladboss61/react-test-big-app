@@ -1,13 +1,13 @@
-import React, { useEffect } from "react"
-import './CountResultComponent.css';
+import React, { FC, useEffect } from "react"
+import classes from './CountResultComponent.module.css';
 
-type CountResultProps = { 
+type CountResultProps = {
     index: number,
     xProperty: number,
     deleteHandler: ((ev: React.MouseEvent<HTMLButtonElement>, key: number) => void)
 }
 
-const CountResultComponent = (pros: CountResultProps): JSX.Element => {
+const CountResultComponent: FC<CountResultProps> = (props: CountResultProps): JSX.Element => {
 
     useEffect(() => {
       console.log("%c CountResultComponent: first render of component.", 'background: #222; color: yellow');
@@ -16,12 +16,11 @@ const CountResultComponent = (pros: CountResultProps): JSX.Element => {
       }
     }, []);
 
-
     return (<>
-        <div className="flex">
-            <div className="count">CountResultComponent: {pros.xProperty}</div>
+        <div className={classes.flex}>
+            <div className={classes.count}>CountResultComponent: {props.xProperty}</div>
             <div>
-                <button className="delete" onClick={ev => pros.deleteHandler(ev, pros.index)}>Delete</button>
+                <button className={classes.delete} onClick={ev => props.deleteHandler(ev, props.index)}>Delete</button>
             </div>
         </div>
     </>)

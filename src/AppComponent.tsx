@@ -1,10 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import logo from './logo.svg';
 import './AppComponent.css';
-import CountResultComponent from './components/CountResultComponent';
-import getUser from './Http/fetches';
+
+import CountResultComponent from './components/CountResultComponent/CountResultComponent';
+import ChildrenComponent from './components/ChildrenComponent/ChildrenComponent';
+import TimerComponent from './components/TimerComponent/TimerComponent';
+import UserData from './Models/UserData.model';
+import TimerNotObserverComponent from './components/TimerComponentNotObserber/TimerNotObserverComponent';
+
+import { config } from './api-constants';
+import { Button } from 'react-bootstrap';
+import { TimerStore } from './store/Timer.store';
+import { BucketStore, ItemBucket } from './store/Bucket.store';
+import BucketComponent from './components/BucketComponent/BucketComponent';
+import MyFormComponent from './components/MyFormComponent/MyFormComponent';
+
+export const myTimer = new TimerStore();
+export const myBucket = new BucketStore();
+
+function getRandomInt(min: number, max: number) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+}
 
 function AppComponent(): JSX.Element {
+
   console.log("AppComponent: Function executed.");
   
   let [count, setCount] = useState<number>(0);
@@ -18,6 +39,21 @@ function AppComponent(): JSX.Element {
 
   useEffect(() => {
     console.log("AppComponent: executed First Render of component.");
+
+    const getUser = async (): Promise<UserData> => {
+      const result: Response = await fetch(`${config.reqresUrl}/api/users/2`);
+      const body = await result.json();
+
+      console.log("Body Response: ");
+      console.log(body);
+
+      const castedBody = body as UserData; // cast using as operator.
+
+      console.log("CastedBody Response: ");
+      console.log(castedBody);
+
+      return castedBody;
+    }
 
     getUser();
     return () => {
@@ -50,7 +86,14 @@ function AppComponent(): JSX.Element {
         <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">Learn React</a>
       </header>
 
-      <button className='my-btn' onClick={
+      
+      <ChildrenComponent title='Hello from AppComponent 1.'>
+          <div>Passed content from AppComponent.</div>
+      </ChildrenComponent>
+
+      <ChildrenComponent title='Hello from AppComponent 2.'></ChildrenComponent>
+
+      <Button variant="primary" className='my-btn' onClick={
         (ev: React.MouseEvent<HTMLButtonElement>) => {
 
           console.log('Inside button handler');
@@ -62,10 +105,8 @@ function AppComponent(): JSX.Element {
 
             return [...prevValueArray, count]; // copy is needed
           });
-        }}>Add One</button>
-
-      {/* <CountResultComponent index={99} xProperty={1} deleteHandler={(ev, index) => { console.log("No Effect. 1") }}></CountResultComponent>
-      <CountResultComponent index={99} xProperty={1} deleteHandler={(ev, index) => { console.log("No Effect. 2") }}></CountResultComponent> */}
+          console.log("Add One btn is executed.")
+        }}>Add One</Button>
 
         {counts.length !== 0 &&
           (<div id='id-counts' className='counts'>
@@ -75,6 +116,24 @@ function AppComponent(): JSX.Element {
                 xProperty={x}
                 deleteHandler={deleteHandler}></CountResultComponent>))}
           </div>)}
+
+          <div>
+            <Button variant="primary" className='my-btn' onClick={() => myTimer.increaseTimer()}>Timer Click</Button>
+          </div>
+
+          <TimerComponent></TimerComponent>
+          <TimerNotObserverComponent></TimerNotObserverComponent>
+
+          <div>
+            <Button variant="primary" className='my-btn' onClick={() => {
+              myBucket.addItem(
+                { id: getRandomInt(0, 10000000), name: "Cola", description: "Tasty product." } as ItemBucket)
+            }}>Add To Bucket</Button>
+          </div>
+
+          <BucketComponent></BucketComponent>
+
+          <MyFormComponent></MyFormComponent>
     </div>
   );
 }
