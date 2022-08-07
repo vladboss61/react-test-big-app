@@ -2,6 +2,11 @@ import { observer } from 'mobx-react-lite';
 import { FC } from 'react';
 import { Button, Form } from 'react-bootstrap';
 
+type MyFormControl = {
+    formBasicEmail: { value: string };
+    formBasicPassword: { value: string };
+}
+
 const MyFormComponent: FC = observer(() => {
 
     console.log("MyFormComponent is executed.");
@@ -9,17 +14,38 @@ const MyFormComponent: FC = observer(() => {
 
     </form>
     return <>
-          <Form onSubmit={(ev) => {
-                    ev.preventDefault();
-                    const all: any = ev.target as any;
-                    console.log(all[0].value);
-                    console.log(all[1].value);
+          <Form onSubmit={(e) => {
+                    e.preventDefault();
+                    console.log(e);
+                    const target = e.target as typeof e.target & MyFormControl
+
+                    debugger
+                    const email = target.formBasicEmail.value; // typechecks!
+                    const password = target.formBasicPassword.value; // typechecks!
+
+                    console.log(email);
+                    console.log(password);
+                    
+                    // for react-forms
+                    // e.preventDefault();
+                    // console.log(e);
+                    // const target = e.target as typeof e.target & {
+                    //     femail: { value: string };
+                    //     fpassword: { value: string };
+                    //   };
+                    // debugger
+                    // const email = target.femail.value; // typechecks!
+                    // const password = target.fpassword.value; // typechecks!
+
+                    // console.log(email);
+                    // console.log(password);
+                
                 }
             }>
 
             <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Email address</Form.Label>
-                <Form.Control type="email" placeholder="Enter email" />
+                <Form.Control type="email" placeholder="Enter email" name='femail'/>
                 <Form.Text className="text-muted">
                     We'll never share your email with anyone else.
                 </Form.Text>
@@ -27,7 +53,7 @@ const MyFormComponent: FC = observer(() => {
 
             <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>Password</Form.Label>
-                <Form.Control type="password" placeholder="Password" onChange={(ev) =>  {
+                <Form.Control type="password" placeholder="Password" name='fpassword' onChange={(ev) =>  {
                     console.log(ev);
                     const input: any = ev.target as any;
                     console.log(input.value);
@@ -35,13 +61,43 @@ const MyFormComponent: FC = observer(() => {
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                <Form.Check type="checkbox" label="Check me out" />
+                <Form.Check type="checkbox" label="Check me out"/>
             </Form.Group>
 
             <Button variant="primary" type="submit">
                 Submit
             </Button>
     </Form>
+
+        <form
+            onSubmit={(e: React.SyntheticEvent) => {
+                e.preventDefault();
+                const target = e.target as typeof e.target & {
+                    email: { value: string };
+                    password: { value: string };
+                };
+                const email = target.email.value; // typechecks!
+                const password = target.password.value; // typechecks!
+                debugger
+            // etc...
+            }}
+            >
+            <div>
+            <label>
+                Email:
+                <input type="email" name="email" />
+            </label>
+            </div>
+            <div>
+            <label>
+                Password:
+                <input type="password" name="password" />
+            </label>
+            </div>
+            <div>
+            <input type="submit" value="Log in" />
+            </div>
+    </form>
     </>
 });
 
