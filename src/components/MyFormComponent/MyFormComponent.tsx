@@ -5,6 +5,7 @@ import { Button, Form } from 'react-bootstrap';
 type MyFormControl = {
     formBasicEmail: { value: string };
     formBasicPassword: { value: string };
+    formBasicCheckbox: { checked: boolean };
 }
 
 const MyFormComponent: FC = observer(() => {
@@ -19,12 +20,13 @@ const MyFormComponent: FC = observer(() => {
                     console.log(e);
                     const target = e.target as typeof e.target & MyFormControl
 
-                    debugger
                     const email = target.formBasicEmail.value; // typechecks!
                     const password = target.formBasicPassword.value; // typechecks!
+                    const checkbox = target.formBasicCheckbox.checked; // typechecks!
 
                     console.log(email);
                     console.log(password);
+                    console.log(checkbox);
                     
                     // for react-forms
                     // e.preventDefault();
@@ -75,10 +77,15 @@ const MyFormComponent: FC = observer(() => {
                 const target = e.target as typeof e.target & {
                     email: { value: string };
                     password: { value: string };
+                    isApprove: { checked: boolean };
                 };
                 const email = target.email.value; // typechecks!
                 const password = target.password.value; // typechecks!
-                debugger
+                const isApprove = target.isApprove.checked; // typechecks!
+
+                console.log(email);
+                console.log(password);
+                console.log(isApprove);
             // etc...
             }}
             >
@@ -92,6 +99,12 @@ const MyFormComponent: FC = observer(() => {
             <label>
                 Password:
                 <input type="password" name="password" />
+            </label>
+            </div>
+            <div>
+            <label>
+                Approve:
+                <input type="checkbox" name="isApprove" />
             </label>
             </div>
             <div>
